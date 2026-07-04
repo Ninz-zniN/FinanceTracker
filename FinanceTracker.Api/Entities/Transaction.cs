@@ -6,7 +6,7 @@ namespace FinanceTracker.Api.Entities
     {
         public int Id { get; set; }
         public decimal Amount { get; set; }
-        public DateTime Date { get; set; } = DateTime.UtcNow;
+        public DateOnly Date { get; set; }
         public TransactionType Type { get; set; }
         public string? Note { get; set; }
 

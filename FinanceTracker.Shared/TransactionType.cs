@@ -6,6 +6,7 @@ namespace FinanceTracker.Shared
 {
     public enum TransactionType
     {
-
+        Income,
+        Expense
     }
 }
