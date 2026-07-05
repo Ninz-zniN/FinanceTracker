@@ -1,0 +1,47 @@
+﻿<Window x:Class="FinanceTracker.Client.Views.LoginWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:FinanceTracker.Client.Views"
+        mc:Ignorable="d"
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+        Title="Finance Tracker - Вход"
+        Height="400" Width="400"
+        WindowStartupLocation="CenterScreen"
+        ResizeMode="NoResize">
+    <Grid Margin="20">
+        <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center" Width="300">
+            <TextBlock Text="Finance Tracker"
+                       FontSize="24" FontWeight="Bold"
+                       HorizontalAlignment="Center" Margin="0,0,0,30"/>
+
+            <TextBox x:Name="UsernameBox"
+                     materialDesign:HintAssist.Hint="Логин"
+                     Margin="0,0,0,15"
+                     Style="{StaticResource MaterialDesignFloatingHintTextBox}"/>
+
+            <PasswordBox x:Name="PasswordBox"
+                         materialDesign:HintAssist.Hint="Пароль"
+                         Margin="0,0,0,20"
+                         Style="{StaticResource MaterialDesignFloatingHintPasswordBox}"/>
+
+            <Button x:Name="LoginButton"
+                    Content="Войти"
+                    Style="{StaticResource MaterialDesignRaisedButton}"
+                    Margin="0,0,0,10"
+                    Click="LoginButton_Click"/>
+
+            <Button x:Name="RegisterButton"
+                    Content="Регистрация"
+                    Style="{StaticResource MaterialDesignOutlinedButton}"
+                    Click="RegisterButton_Click"/>
+
+            <TextBlock x:Name="ErrorText"
+                       Foreground="Red"
+                       TextWrapping="Wrap"
+                       HorizontalAlignment="Center"
+                       Visibility="Collapsed"/>
+        </StackPanel>
+    </Grid>
+</Window>
