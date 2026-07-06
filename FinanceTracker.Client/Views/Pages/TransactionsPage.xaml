@@ -4,10 +4,132 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:FinanceTracker.Client.Views.Pages"
+             xmlns:converters="clr-namespace:FinanceTracker.Client.Converters"
              mc:Ignorable="d" 
+             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
              d:DesignHeight="450" d:DesignWidth="800">
-    <Grid>
-        <TextBlock Text="Транзакции (будет дополнено)"
-                   FontSize="24" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+    <UserControl.Resources>
+        <converters:TransactionTypeConverter x:Key="TypeConverter"/>
+    </UserControl.Resources>
+    <Grid Margin="10">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <!-- Заголовок и кнопка добавления -->
+        <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="0,0,0,10">
+            <TextBlock Text="Транзакции" FontSize="24" FontWeight="Bold"/>
+            <Button Content="+ Добавить" Margin="20,0,0,0"
+                    Style="{StaticResource MaterialDesignRaisedButton}"
+                    Click="AddTransaction_Click"/>
+        </StackPanel>
+
+        <!-- Фильтры -->
+        <Grid Grid.Row="1" Margin="0,0,0,10">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+
+            <DatePicker x:Name="FromDatePicker"
+                materialDesign:HintAssist.Hint="С даты"
+                Grid.Column="0" Margin="0,0,10,0"
+                Style="{StaticResource MaterialDesignFloatingHintDatePicker}"
+                SelectedDateChanged="Filter_Changed"/>
+
+            <DatePicker x:Name="ToDatePicker"
+                materialDesign:HintAssist.Hint="По дату"
+                Grid.Column="1" Margin="0,0,10,0"
+                Style="{StaticResource MaterialDesignFloatingHintDatePicker}"
+                SelectedDateChanged="Filter_Changed"/>
+
+            <ComboBox x:Name="CategoryFilter"
+              materialDesign:HintAssist.Hint="Категория"
+              Grid.Column="2" Margin="0,0,10,-5"
+              DisplayMemberPath="Name"
+              SelectedValuePath="Id"
+              SelectionChanged="Filter_Changed"/>
+
+            <Button Content="Сбросить" Grid.Column="3"
+            Style="{StaticResource MaterialDesignFlatButton}"
+            Click="ResetFilter_Click"/>
+        </Grid>
+
+        <!-- Таблица -->
+        <DataGrid x:Name="TransactionsGrid" Grid.Row="2"
+                  AutoGenerateColumns="False"
+                  IsReadOnly="True"
+                  SelectionMode="Single"
+                  RowHeaderWidth="0"
+                  HorizontalGridLinesBrush="#E0E0E0"
+                  VerticalGridLinesBrush="#E0E0E0"
+                  MouseDoubleClick="EditTransaction_Click">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Дата" Binding="{Binding Date}" Width="100"/>
+                <DataGridTextColumn Header="Тип" Binding="{Binding Type, Converter={StaticResource TypeConverter}}" Width="100"/>
+                <DataGridTextColumn Header="Категория" Binding="{Binding CategoryName}" Width="130"/>
+                <DataGridTextColumn Header="Сумма" Width="110">
+                    <DataGridTextColumn.Binding>
+                        <Binding Path="Amount" StringFormat="{}{0:N2}"/>
+                    </DataGridTextColumn.Binding>
+                    <DataGridTextColumn.ElementStyle>
+                        <Style TargetType="TextBlock">
+                            <Setter Property="HorizontalAlignment" Value="Right"/>
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding Type}" Value="Income">
+                                    <Setter Property="Foreground" Value="Green"/>
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding Type}" Value="Expense">
+                                    <Setter Property="Foreground" Value="Red"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </DataGridTextColumn.ElementStyle>
+                </DataGridTextColumn>
+                <DataGridTextColumn Header="Заметка" Binding="{Binding Note}" Width="*"/>
+            </DataGrid.Columns>
+            <DataGrid.ContextMenu>
+                <ContextMenu>
+                    <ContextMenu.Resources>
+                        <Style TargetType="ContextMenu" BasedOn="{StaticResource MaterialDesignContextMenu}">
+                            <Setter Property="Padding" Value="0"/>
+                            <Setter Property="Margin" Value="0"/>
+                            <Setter Property="BorderThickness" Value="1"/>
+                            <Setter Property="VerticalAlignment" Value="Center"/>
+                        </Style>
+                        <Style TargetType="ScrollViewer">
+                            <Setter Property="CanContentScroll" Value="False"/>
+                            <Setter Property="VerticalScrollBarVisibility" Value="Disabled"/>
+                        </Style>
+                        <Style TargetType="MenuItem" BasedOn="{StaticResource MaterialDesignMenuItem}">
+                            <Setter Property="Padding" Value="6,3"/>
+                            <Setter Property="Margin" Value="0"/>
+                            <Setter Property="VerticalAlignment" Value="Stretch"/>
+                            <Setter Property="FontSize" Value="16"/>
+                        </Style>
+                    </ContextMenu.Resources>
+                    <MenuItem Click="EditTransaction_Click">
+                        <MenuItem.Header>
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="✎ " Foreground="Green"/>
+                                <TextBlock Text="Редактировать"/>
+                            </StackPanel>
+                        </MenuItem.Header>
+                    </MenuItem>
+                    <MenuItem Click="DeleteTransaction_Click">
+                        <MenuItem.Header>
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="❌️ " Foreground="Red"/>
+                                <TextBlock Text="Удалить"/>
+                            </StackPanel>
+                        </MenuItem.Header>
+                    </MenuItem>
+                </ContextMenu>
+            </DataGrid.ContextMenu>
+        </DataGrid>
     </Grid>
 </UserControl>
